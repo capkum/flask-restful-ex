@@ -1,5 +1,8 @@
 from flask_restful import reqparse, abort, Api, Resource
 
+from base import app, db
+from base.models import User
+
 TODOS =  {
     'todo1': {'task': 'build an API'},
     'todo2': {'task': '?????'},
@@ -26,6 +29,15 @@ class Todo(Resource):
 
 class TodoList(Resource):
     def get(self):
+        user = User('Test Name', 'test@email.com')
+        db.session.add(user)
+
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            app.logger.debug(e)
+
         return TODOS
     
     def post(self):
